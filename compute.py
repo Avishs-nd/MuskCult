@@ -1,2 +1,3 @@
 def add(x):
-    return x + 2
+    print("V1: Adding 3 to", x)
+    return x + 3
