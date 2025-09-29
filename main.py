@@ -1,22 +1,21 @@
-import subprocess
+from git_utils import checkout_file_from_commit
 import importlib.util
-import os
+import sys
 
-# Get compute.py from a previous commit
-commit_id = "ee6bab9381acadaed7b0b8632071977b4aa15f62"  
-result = subprocess.run(f"git show {commit_id}:compute.py", shell=True, capture_output=True, text=True, check=True)
+# Checkout the compute.py file from a previous commit
+previous_commit_id = "ee6bab9381acadaed7b0b8632071977b4aa15f62"  # Replace with your actual commit ID
+old_compute_file = checkout_file_from_commit(
+    repo_path="/Users/avishsanthosh/Desktop/MuskCult",
+    commit_id=previous_commit_id,
+    file_path="compute.py",
+    destination_path="compute_old.py"
+)
 
-# Write to temporary file
-with open("compute_old.py", 'w') as f:
-    f.write(result.stdout)
-
-# Import the old version
-spec = importlib.util.spec_from_file_location("compute_old", "compute_old.py")
+# Import the old version dynamically
+spec = importlib.util.spec_from_file_location("compute_old", old_compute_file)
 compute_old = importlib.util.module_from_spec(spec)
+sys.modules["compute_old"] = compute_old
 spec.loader.exec_module(compute_old)
 
-# Use the old add function
+# Use the old version of the add function
 print(compute_old.add(3))
-
-# Clean up
-os.remove("compute_old.py")
