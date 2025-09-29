@@ -1,13 +1,10 @@
-from git_utils import checkout_file_from_commit, load_module_from_commit
+from git_utils import GitFileManager
 
-# Load the compute.py module from a previous commit directly into memory
-previous_commit_id = "da84f9d20f8617e287413144d4f4b633bd64a16e"
-compute_old = load_module_from_commit(
-    repo_path="/Users/avishsanthosh/Desktop/MuskCult",
-    commit_id=previous_commit_id,
-    file_path="compute.py",
-    module_name="compute_old"
-)
+commit_v2 = "d0f6317145dfaef548087ba2765c0c1df6b11122"
+commit_v1 = "ee6bab9381acadaed7b0b8632071977b4aa15f62"
 
-# Use the old version of the add function
-print(compute_old.add(3))
+with GitFileManager("/Users/avishsanthosh/Desktop/MuskCult") as git_manager:
+    compute_v1 = git_manager.checkout_and_load(commit_v2, "compute.py", "compute_v1")
+    computed_value = compute_v1.add(5)
+    print(computed_value)
+        
